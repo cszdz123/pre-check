@@ -6,3 +6,4 @@ report some information for you want.
 - CPU Info
 - Network Information
 - Desk Information
+add something
