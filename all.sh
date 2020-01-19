@@ -8,7 +8,7 @@
 #==========================================================
 ### Env Set
 WORK_DIR=$(dirname $(readlink -f $0))
-
+Language_chinese_abled=true
 ### Shell Tools
 RED='\e[1;31m'
 GREEN='\e[1;32m'
