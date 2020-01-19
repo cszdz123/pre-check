@@ -5,3 +5,4 @@ report some information for you want.
 - GPU Info
 - CPU Info
 - Network Information
+- Desk Information
