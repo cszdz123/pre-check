@@ -38,7 +38,7 @@ elif [ ${Cluster_mode} == "true" ];then
                 red_echo "ERROR: No slave.tar, please build slave tar first"
                 exit -1
             fi
-                rsync --rsh="sshpass -e ssh -p $SSH_PORT -o StrictHostKeyChecking=no  -l root" $WORK_DIR/slave.tar $slave:/tmp/
+                sshpass -e scp -P $SSH_PORT $WORK_DIR/slave.tar $slave:/tmp/
                 sshpass -e  ssh   -p $SSH_PORT -o StrictHostKeyChecking=no root@$slave "mkdir -p /tmp/pre-check && cd /tmp/ && tar xf slave.tar -C /tmp/pre-check"
         fi
     done
@@ -46,7 +46,7 @@ elif [ ${Cluster_mode} == "true" ];then
    reachableHost=(${reachHost})
        for slave in ${reachableHost[@]};do
            sshpass -e  ssh   -p $SSH_PORT -o StrictHostKeyChecking=no root@$slave "cd /tmp/pre-check;sh gather.sh"
-           rsync --rsh="sshpass -e ssh -p $SSH_PORT -o StrictHostKeyChecking=no  -l root" $slave:/tmp/pre-check/report/* $WORK_DIR/report/
+           sshpass -e scp -P $SSH_PORT  $slave:/tmp/pre-check/report/* $WORK_DIR/report/
        done
    
        # Clean slave test pacakge

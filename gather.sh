@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -ex
 
 ############ Define ##################
 WORK_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -7,8 +8,6 @@ export LANG=en
 source ./tools/config
 source ./tools/libfunc
 source ./tools/check-list.sh
-command_exists sshpass || rpm -ivh $WORK_DIR/rpm/sshpass-1.06-2.el7.x86_64.rpm &> /dev/null
-[ $? != 0 ] && echo "install sshpass failure,please install manual" && exit 1
 
 ############ Report ######################
 func_html_header
@@ -25,28 +24,33 @@ done
 func_tb_end
 
 ### SSH 连通性测试 ###
-html_echo "<h2>SSH连通性</h2>"
-html_echo "<p>测试从${DIP}到其他节点的ssh连通性</p>"
-func_tr_start "HOST" "Info"
-func_tr
-for Slave_IP in ${Host[@]};do
-    if [[ $Slave_IP = "${DIP}" ]];then
-        continue
-    fi
-    sshpass -e  ssh   -p $SSH_PORT -o StrictHostKeyChecking=no root@$Slave_IP pwd &>/dev/null
-    if [ $? != 0 ];then
-        func_td "$Slave_IP"
-        func_td "Failed"
-        func_tr
-        continue
-    else
-        func_td "$Slave_IP"
-        func_td "Succeed"
-        func_tr
-    fi
-done
+if [ ${Cluster_mode} == "true" ];then
+    command_exists sshpass || rpm -ivh $WORK_DIR/rpm/sshpass-1.06-2.el7.x86_64.rpm &> /dev/null
+    [ $? != 0 ] && echo "install sshpass failure,please install manual" && exit 1
+    command_exists rsync || rpm -ivh $WORK_DIR/rpm/rsync-3.1.2-10.el7.x86_64.rpm &> /dev/null
+    [ $? != 0 ] && echo "install rsync failure,please install manual" && exit 1
+    html_echo "<h2>SSH连通性</h2>"
+    html_echo "<p>测试从${DIP}到其他节点的ssh连通性</p>"
+    func_tr_start "HOST" "Info"
+    func_tr
+    for Slave_IP in ${Host[@]};do
+        if [[ $Slave_IP = "${DIP}" ]];then
+            continue
+        fi
+        sshpass -e  ssh   -p $SSH_PORT -o StrictHostKeyChecking=no root@$Slave_IP pwd &>/dev/null
+        if [ $? != 0 ];then
+            func_td "$Slave_IP"
+            func_td "Failed"
+            func_tr
+            continue
+        else
+            func_td "$Slave_IP"
+            func_td "Succeed"
+            func_tr
+        fi
+    done
 func_tb_end
-
+fi
 
 ### 主机信息：架构、系统版本等 ###
 #func_tab
