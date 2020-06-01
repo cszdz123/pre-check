@@ -1,0 +1,12 @@
+#!/bin/bash
+
+## Cluster_mode=[true|false],deafult is false
+export Cluster_mode=""
+export SSHPASS='password'
+Host=(
+192.168.1.2
+192.168.1.3
+192.168.1.4
+)
+export title="系统信息报告"
+export HOST=$(hostname)

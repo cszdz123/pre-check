@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+    }
+
+    .left {
+        float: left;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .right {
+        float: right;
+        width: 100%;
+        height: 900px;
+        display: hidden;
+        overflow: auto;
+    }
+    li {
+        display: inline-block;
+        border: 1px solid brown;
+        border-radius: 10px;
+        width: 120px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+    }
+    .hover {
+        background-color: brown;
+        color: #FFF;
+    }
+</style>
+
+<body>
+    <script src="jquery-3.2.1.min.js"></script>
+    <div>
+        <div class="left">
+            <ul id="list">
+
+            </ul>
+        </div>
+        <div class="right">
+        </div>
+    </div>
+    <script>
+        function Gohtml() {
+            var data = [
+                $CLUSTER
+            ];
+            for (var i = 0; i < data.length; i++) {
+                $("#list").append("<li id=" + i + ">" + data[i].name + "</li>");
+                $("#li" + i).attr("class", 'item');
+            }
+            $('li').on('click', function (e) {
+                $(this).siblings().removeClass('hover');
+                $(this).addClass('hover')
+                for (var j in data) {
+                    if (j === e.target.id) {
+                        $(".right").empty();
+                        $(".right").append(
+                            `<iframe src="${data[j].url}" width="100%" height="100%" frameborder="1/0" name="名称" scrolling="auto"></iframe>`
+                        )
+                    }
+                }
+            });
+        }
+        var p = new Gohtml();
+    </script>
+</body>
+
+</html>
