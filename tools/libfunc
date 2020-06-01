@@ -1,0 +1,112 @@
+#!/bin/bash
+export WEB_DIR='report'
+title="系统信息报告"
+HOST=$(hostname)
+function html_echo(){
+	echo "$@" >>${WEB_DIR}/report.html
+}
+
+###################################################
+################## 表格函数 #######################
+###################################################
+
+### <table>标签以及<th>标签定义 ###
+## exp: func_tr_start "hostname" "Eth name"
+function func_tr_start(){
+	html_echo "<table id=\"summary\" >
+  <tr>"
+	for num in "$@";do
+	  html_echo "    <th>$num</th>"
+	done
+	html_echo "  </tr>"
+}
+
+### 表开头，可选择标题占多列 ###
+## exp: func_tb_start 2 "col1" "col2"
+function func_tb_start(){
+local var
+local num=$1
+shift
+	html_echo "<br>
+<table border='1'>
+<tr>"
+	for var in "$@";
+	do	
+		html_echo "<th class='titulo' colspan='$num'>$var</td>"
+	done
+html_echo "</tr>"
+}
+function func_tb_end(){
+	html_echo "</table>
+<hr>"
+}
+
+### 表头###
+function func_th(){
+       local num=${2:-1}
+        html_echo "<th class='titulo' rowspan='$num'>$1</th>"
+}
+
+function func_th_col(){
+       local num=${2:-1}
+        html_echo "<th class='titulo' colspan='$num'>$1</th>"
+}
+### 换行 ###
+function func_tr(){
+        html_echo "  <tr>"
+}
+
+function func_tr_end(){
+        html_echo "  </tr>"
+}
+###  换列 ###
+function func_td(){
+        for num in "$@";do
+                html_echo "    <td>$num</td>"
+        done
+}
+
+function func_tab (){
+local i
+local num=${1:-1}
+    for ((i=1;i<=$num;i++));do
+        html_echo "<br>"
+    done
+}
+
+### html头信息 ###
+function func_html_header(){
+html_echo "<HTML>
+  <HEAD>
+    <meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\"/>
+    <meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\"/> 
+  <style>
+    body {
+      background-color: #f2f2f2;
+      color: #333;
+      margin: 0 auto;
+      width: 960px;
+    }
+    #summary {
+      width: 960px;
+      margin-bottom: 20px;
+    }
+    #summary th {
+      background-color: skyblue;
+      padding: 5px 12px;
+    }
+    #summary td {
+      background-color: lightblue;
+      text-align: center;
+      padding: 4px 8px;
+    }
+  </style>
+  <title>
+    ${title}
+  </title>
+  </HEAD>
+  <BODY align='center'>
+日期: <strong>$(date)</strong><br>
+Information for host <strong>$HOST</strong><br>
+Last reboot time: <strong>` who -b`</strong><br><br>"
+}

@@ -1,8 +1,97 @@
-# pre-check
-report some information for you want.
-- system os info,hostname\arch\kernel ex.
-- Required rpm package
-- GPU Info
-- CPU Info
-- Network Information
-- Desk Information
+# 服务器信息收集工具
+
+- 1.服务器硬件、操作系统、软件、网络等信息的收集
+- 2.输出为html文档
+- 3.无须安装额外的包
+
+## 运行方法
+```
+]# sh execute.sh
+```
+脚本运行大概5秒左右，期间不会有信息输出，会在当前目录下生成一个report目录，并在目录中生成一个report.html文件，在浏览器打开查看。
+## 结果查看
+运行如下命令会在服务器上打开一个8348端口(端口可自定义)，运行http服务
+```
+]# python http.py 8348
+```
+浏览器输入`http://服务器IP:8348/report/report.html`查看结果;
+
+>例如:`http://192.168.12.2:8348/report/report.html`
+
+## 信息收集概览
+
+---
+- 网卡信息
+
+主机名 网卡名 IP/子网掩码 网关
+
+---
+- 操作系统
+
+系统版本、架构、内核版本
+
+---
+- BIOS主板信息
+
+BIOS主板品牌以及版本
+
+---
+- 服务器硬件信息
+
+品牌、序列号、内存卡信息、CPU卡信息
+
+---
+- 内存卡信息
+
+一共有几张卡，以及每张卡的品牌、大小、主频、类型(DDR3/DDR4)
+
+----
+- CPU卡信息
+
+共有几张卡，以及每张卡的品牌、系列、最大主频、当前主频、核心数和线程数
+
+----
+- 硬盘、分区、挂载
+
+硬盘大小，分区、文件系统类型、挂载目录、使用率、Inode使用率
+
+---
+- 软件包安装信息
+
+主要是检查我们将要部署的服务的一些依赖包
+>例如
+net-tools：会生成ifconfig命令
+bc:BML部署master节点需要使用
+attr:BML部署依赖
+libattr:同上
+unzip：一般部署都需要
+
+---
+- 服务启动情况
+
+像防火墙、selinux以及NetworkManager、ntp、crond(定时任务)
+
+---
+- 可登录用户的信息
+
+拥有/bin/bash的用户的信息输出，检查有哪些用户可以登录服务器
+
+---
+- NDS信息
+
+检查/etc/resolv.conf文件中的DNS服务信息
+
+- [fix] DNS连通性检查
+
+---
+- 端口监听情况
+
+系统当前监听的端口信息
+
+----
+- 日志信息
+
+messages日志最近输出的20行已经dmesg日志
+
+
+
